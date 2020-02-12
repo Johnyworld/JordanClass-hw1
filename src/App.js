@@ -36,20 +36,11 @@ const buttonStyle = {
 const regUsername = /[a-zA-Z].{2,15}$/;
 const regPassword = /[a-zA-Z0-9!@#$%^*()\-_=+\\|[\]{};:'",.<>/?].{5,}$/;
 
-const isSafe = (string, type) => {
+const isSafe = (string, rule) => {
   // string: str!
-  // type: oneOf( 'username' | 'password' )!
-  if ( type === 'username' ) {
-    if ( string && regUsername.test(string)) return true;
-    else return false;
-
-  } else if ( type === 'password' ) {
-    if ( string && regPassword.test(string)) return true;
-    else return false;
-
-  } else return false;
+  // rule: <reg rule>!
+  return ( string && rule.test(string) );
 }
-
 
 class App extends Component {
   state = {
@@ -75,13 +66,13 @@ class App extends Component {
     const usernameElement = this.usernameRef.current;
     const passwordElement = this.passwordRef.current;
 
-    if ( !isSafe( username, 'username' )) {
+    if ( !isSafe( username, regUsername )) {
       this.setState({
         message: { type: 'error', text: 'Username is wrong' } 
       });
       usernameElement.focus();
 
-    } else if ( !isSafe( password, 'password' ) ) {
+    } else if ( !isSafe( password, regPassword ) ) {
       this.setState({
         message: { type: 'error', text: 'Password is wrong' },
         password: ''
@@ -127,7 +118,7 @@ class App extends Component {
 
         <div style={{ ...messageStyle, color: message.type === 'error' ? 'red' : 'green' }}>{message.text}</div>
 
-        <button disabled={ !isSafe(username, 'username') || !isSafe(password, 'password') } type='submit' style={buttonStyle} >
+        <button disabled={ !isSafe(username, regUsername) || !isSafe(password, regPassword) } type='submit' style={buttonStyle} >
           Log in
         </button>
         
